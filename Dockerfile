@@ -26,7 +26,7 @@ RUN apt-get update && \
 
 # 1.1. Download source
 WORKDIR ${HOME}
-RUN wget https://download.qemu.org/qemu-${QEMU_VERSION}.tar.xz && \
+RUN curl https://download.qemu.org/qemu-${QEMU_VERSION}.tar.xz -o qemu-${QEMU_VERSION}.tar.xz && \
     tar xvJf qemu-${QEMU_VERSION}.tar.xz
 
 # 1.2. Install dependencies
@@ -60,9 +60,11 @@ RUN qemu-system-riscv64 --version && \
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    RUST_VERSION=nightly
+    RUST_VERSION=nightly \
+    RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static \
+    RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 RUN set -eux; \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup-init; \
+    curl --proto '=https' --tlsv1.2 -sSf https://cdn.jsdelivr.net/gh/rust-lang-nursery/rustup.rs/rustup-init.sh -o rustup-init; \
     chmod +x rustup-init; \
     ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION; \
     rm rustup-init; \
